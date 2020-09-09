@@ -1,0 +1,24 @@
+__pycache__
+test_params_create
+file.json
+main_delete.py
+main_place_amenities.py
+test_get_count.py
+
+# Editors
+.vscode/
+.idea/
+
+# Vagrant
+.vagrant/
+
+# Mac/OSX
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Python files
+__pycache__/
+*.py[cod]
+*$py.class
