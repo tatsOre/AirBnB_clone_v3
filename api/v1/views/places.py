@@ -72,7 +72,8 @@ def update_place(place_id=None):
     if not place:
         abort(404)
     for attr, value in place_attributes.items():
-        if attr not in ['created_at', 'updated_at', 'id', 'user_id', 'city_id']:
+        ignore = ['created_at', 'updated_at', 'id', 'user_id', 'city_id']
+        if attr not in ignore:
             setattr(place, attr, value)
     storage.save()
     return jsonify(place.to_dict()), 200
