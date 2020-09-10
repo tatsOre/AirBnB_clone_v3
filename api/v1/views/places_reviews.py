@@ -55,9 +55,10 @@ def create_review(place_id=None):
         new_review = Review(**request_json)
         new_review.place_id = place_id
         new_review.save()
-        return jsonify(new_review.to_dict()), 20
+        return jsonify(new_review.to_dict()), 201
     else:
         abort(404)
+
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'],
                  strict_slashes=False)
