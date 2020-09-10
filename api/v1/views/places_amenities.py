@@ -11,7 +11,7 @@ from models.amenity import Amenity
 from flask import jsonify, abort, request
 
 
-@app_views.route('/places/<place_id>/amenities', methods=["GET"],
+@app_views.route('/places/<place_id>/amenities', methods=['GET'],
                  strict_slashes=False)
 def get_amenities_by_place(place_id=None):
     """Retrieves the list of all Amenity objects by Place ID:

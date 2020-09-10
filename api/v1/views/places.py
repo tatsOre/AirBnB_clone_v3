@@ -11,9 +11,9 @@ from models import storage
 from flask import jsonify, abort, request
 
 
-@app_views.route('/cities/<city_id>/places', methods=["GET"],
+@app_views.route('/cities/<city_id>/places', methods=['GET'],
                  strict_slashes=False)
-@app_views.route('/places/<place_id>', methods=["GET"], strict_slashes=False)
+@app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def get_places(city_id=None, place_id=None):
     """Retrieves the list of all Place objects by city:
     GET /cities/<city_id>/places or by ID: GET /places/<place_id>"""
