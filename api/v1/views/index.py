@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Module that set the routes and display request statuses"""
+"""Module that set the routes and display API status and stats"""
 from flask import jsonify
 from api.v1.views import app_views
 from models import storage
