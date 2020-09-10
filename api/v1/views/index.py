@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Module that set the routes and display request statuses"""
-from flask import Flask, jsonify
+from flask import jsonify
 from api.v1.views import app_views
 from models import storage
 from models.state import State
@@ -22,7 +22,7 @@ def count_hbnb_instances():
     """Retrieves the number of each objects by type"""
     hbnb_classes = {
         'amenities': Amenity,
-        'cities': Place,
+        'cities': City,
         'places': Place,
         'reviews': Review,
         'states': State,
