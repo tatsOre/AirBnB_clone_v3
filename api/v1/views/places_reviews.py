@@ -7,6 +7,7 @@ from api.v1.views import app_views
 from models import storage
 from models.review import Review
 from models.place import Place
+from models.user import User
 
 
 @app_views.route('/places/<place_id>/reviews', methods=["GET"],
@@ -50,12 +51,13 @@ def create_review(place_id=None):
         abort(400, {'Missing text'})
     place = storage.get(Place, place_id)
     user = storage.get(User, request_json['user_id'])
-    if place_id in place and user:
+    if place_id and place and user:
         new_review = Review(**request_json)
         new_review.place_id = place_id
         new_review.save()
-        return jsonify(new_review.to_dict()), 201
-
+        return jsonify(new_review.to_dict()), 20
+    else:
+        abort(404)
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'],
                  strict_slashes=False)
