@@ -10,9 +10,9 @@ from models import storage
 from flask import jsonify, abort, request
 
 
-@app_views.route('/states/<state_id>/cities', methods=["GET"],
+@app_views.route('/states/<state_id>/cities', methods=['GET'],
                  strict_slashes=False)
-@app_views.route('/cities/<city_id>', strict_slashes=False, methods=["GET"])
+@app_views.route('/cities/<city_id>', strict_slashes=False, methods=['GET'])
 def get_cities(state_id=None, city_id=None):
     """Retrieves the list of all City objects: GET /states/<state_id>/cities
     or by ID: GET /cities/<city_id>"""
@@ -26,7 +26,7 @@ def get_cities(state_id=None, city_id=None):
         abort(404)
 
 
-@app_views.route('/cities/<city_id>', strict_slashes=False, methods=["DELETE"])
+@app_views.route('/cities/<city_id>', strict_slashes=False, methods=['DELETE'])
 def delete_city(city_id=None):
     """Deletes a City object: DELETE /api/v1/cities/<city_id> by ID"""
     city = storage.get(City, city_id)
@@ -38,7 +38,7 @@ def delete_city(city_id=None):
         abort(404)
 
 
-@app_views.route('/states/<state_id>/cities', methods=["POST"],
+@app_views.route('/states/<state_id>/cities', methods=['POST'],
                  strict_slashes=False)
 def create_city(state_id=None):
     """Creates a City: POST /api/v1/cities"""
@@ -57,8 +57,8 @@ def create_city(state_id=None):
         abort(404)
 
 
-@app_views.route('/cities/<city_id>', strict_slashes=False, methods=["PUT"])
-def update_city(city_id):
+@app_views.route('/cities/<city_id>', strict_slashes=False, methods=['PUT'])
+def update_city(city_id=None):
     """Updates a City object: PUT /api/v1/cities/<city_id> by ID"""
     city_attributes = request.get_json()
     if not city_attributes:

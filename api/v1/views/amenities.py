@@ -20,7 +20,7 @@ def all_amenities():
 
 @app_views.route('/amenities/<amenity_id>', strict_slashes=False)
 def retrieve_amenity(amenity_id):
-    """ retrieve a particular Amenity """
+    """ Retrieves a particular Amenity """
     amenity = storage.get(Amenity, amenity_id)
     if amenity:
         return amenity.to_dict()
