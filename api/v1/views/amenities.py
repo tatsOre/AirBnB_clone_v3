@@ -57,7 +57,7 @@ def create_amenity():
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'],
                  strict_slashes=False)
 def update_amenity(amenity_id):
-    """ Updates a Amenity """
+    """ Updates an Amenity """
     update_attr = request.get_json()
     if not update_attr:
         abort(400, {'Not a JSON'})
