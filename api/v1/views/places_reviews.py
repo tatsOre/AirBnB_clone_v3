@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """
-New view for Review objects 
+New view for Review objects
 """
 from flask import Flask, jsonify, abort, request
 from api.v1.views import app_views
 from models import storage
 from models.review import Review
 from models.place import Place
+
 
 @app_views.route('/places/<place_id>/reviews', methods=["GET"],
                  strict_slashes=False)
@@ -22,6 +23,7 @@ def get_reviews(place_id=None, review_id=None):
     else:
         abort(404)
 
+
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_review(review_id=None):
@@ -31,7 +33,7 @@ def delete_review(review_id=None):
         storage.delete(review)
         storage.save()
         return {}, 200
-    else:     
+    else:
         abort(404)
 
 
@@ -53,6 +55,7 @@ def create_review(place_id=None):
         new_review.place_id = place_id
         new_review.save()
         return jsonify(new_review.to_dict()), 201
+
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'],
                  strict_slashes=False)
