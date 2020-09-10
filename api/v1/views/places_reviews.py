@@ -14,7 +14,7 @@ from models.user import User
                  strict_slashes=False)
 @app_views.route('/reviews/<review_id>', methods=["GET"], strict_slashes=False)
 def get_reviews(place_id=None, review_id=None):
-    """ retrieve list of all Review objects """
+    """ Retrieves list of all Review objects """
     place = storage.get(Place, place_id)
     review = storage.get(Review, review_id)
     if place_id and place:
@@ -28,7 +28,7 @@ def get_reviews(place_id=None, review_id=None):
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_review(review_id=None):
-    """ delete a Review """
+    """ Deletes a Review """
     review = storage.get(Review, review_id)
     if review:
         storage.delete(review)
@@ -41,7 +41,7 @@ def delete_review(review_id=None):
 @app_views.route('/places/<place_id>/reviews', methods=['POST'],
                  strict_slashes=False)
 def create_review(place_id=None):
-    """ create a Review """
+    """ Creates a Review """
     request_json = request.get_json()
     if not request_json:
         abort(400, {'Not a JSON'})
@@ -63,7 +63,7 @@ def create_review(place_id=None):
 @app_views.route('/reviews/<review_id>', methods=['PUT'],
                  strict_slashes=False)
 def update_review(review_id=None):
-    """ update a Review """
+    """ Updates a Review """
     update_attr = request.get_json()
     if not update_attr:
         abort(400, {'Not a JSON'})

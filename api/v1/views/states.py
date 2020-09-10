@@ -51,7 +51,7 @@ def create_state():
 
 
 @app_views.route('/states/<state_id>', strict_slashes=False, methods=["PUT"])
-def update_state(state_id):
+def update_state(state_id=None):
     """Updates a State object: PUT /api/v1/states/<state_id>"""
     state_attributes = request.get_json()
     if not state_attributes:
