@@ -4,9 +4,11 @@ Module that creates a new view for 'Place' objects that handles all default
 RestFul API actions: GET, DELETE, POST, PUT
 """
 from api.v1.views import app_views
+from models.state import State
 from models.city import City
 from models.place import Place
 from models.user import User
+from models.amenity import Amenity
 from models import storage
 from flask import jsonify, abort, request
 
@@ -60,6 +62,52 @@ def create_place(city_id=None):
         return jsonify(new_place.to_dict()), 201
     else:
         abort(404)
+
+
+@app_views.route('/places_search', methods=['POST'],
+                 strict_slashes=False)
+def searched_places():
+    """Search for a Place: POST /api/v1/places_search"""
+    search_parms = request.get_json()
+    if not search_parms:
+        abort(400, {'Not a JSON'})
+    states = search_parms.get('states')
+    cities = search_parms.get('cities')
+    amenities = search_parms.get('amenities')
+    #  if Json 'search_parms' is empty or all lists are empty:
+    if not states and not cities and not amenities:
+        all_places = storage.all(Place).values()
+        return jsonify([place.to_dict() for place in all_places])
+
+    state_cities = []  # Store all cities by every state
+    all_state_places = []  # Store all places of all JSON states
+    if states:
+        for id in states:
+            state = storage.get(State, id)
+            if state:
+                state_cities.extend([city for city in state.cities])
+        for city in state_cities:
+            for place in city.places:
+                all_state_places.append(place)
+
+    all_city_places = []  # Store all places of all search cities
+    if cities:
+        for id in cities:
+            city = storage.get(City, id)
+            if city:
+                all_city_places.extend([place for place in city.places])
+    #  ----- If amenities list is not empty, search for -----
+    #  ----- Place objects having all Amenity ids listed ----- :
+    searched_places = []
+    if amenities:
+        for place in all_state_places + all_city_places:
+            amen_list = [item.id for item in place.amenities]
+            if all(i in amen_list for i in amenities):
+                searched_places.append(place)
+        return jsonify([place.to_dict() for place in searched_places]), 201
+    else:
+        all_places = all_state_places + all_city_places
+        return jsonify([place.to_dict() for place in all_places])
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)

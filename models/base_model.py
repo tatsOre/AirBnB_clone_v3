@@ -70,6 +70,13 @@ class BaseModel:
             del new_dict["_sa_instance_state"]
         if models.storage_t == "db" and new_dict.get('password'):
             del new_dict['password']
+        if self.__class__.__name__ == 'Place' and self.amenities:
+            try:
+                del new_dict['amenities']
+            except KeyError as error:
+                pass
+            #  amenities_list = [item.name for item in self.amenities]
+            #  new_dict['amenities'] = amenities_list
         return new_dict
 
     def delete(self):
