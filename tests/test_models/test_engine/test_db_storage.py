@@ -15,7 +15,7 @@ from models.review import Review
 from models.state import State
 from models.user import User
 import json
-import os
+from os import getenv
 import pep8
 import unittest
 DBStorage = db_storage.DBStorage
@@ -68,39 +68,35 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestFileStorage(unittest.TestCase):
-    """Test the FileStorage class"""
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+class TestDBStorage(unittest.TestCase):
+    """Test the DBStorage class"""
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
         self.assertIs(type(models.storage.all()), dict)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_all_no_class(self):
-        """Test that all returns all rows when no class is passed"""
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_new(self):
-        """test that new adds an object to the database"""
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
-    def test_save(self):
-        """Test that save properly saves objects to file.json"""
-
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
     def test_get(self):
         """Tests to check get method"""
-        storage = DBStorage()
-        if storage.all("State").values():
-            first_state_id = list(storage.all("State").values())[0].id
-            first_state = storage.get("State", first_state_id)
-            self.assertTrue(isinstance(first_state, State))
+        new_user = User(email="tats@gmail.com", password="helloworld")
+        new_user.save()
+        new_state = State(name="Valle")
+        new_state.save()
+        self.assertIs(new_user, models.storage.get(User, new_user.id))
+        self.assertIs(new_state, models.storage.get(State, new_state.id))
+        self.assertIs(None, models.storage.get(State, 'Antioquia'))
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') != 'db',
+                     "not testing db storage")
     def test_count(self):
         """Tests to check count method"""
-        storage = DBStorage()
-        all_objects = storage.count()
-        all_states = storage.count("State")
+        all_objects = models.storage.count()
+        all_states = models.storage.count(State)
         self.assertTrue(isinstance(all_objects, int))
         self.assertTrue(isinstance(all_states, int))
+        new_state = State(name='Bolivar')
+        new_state.save()
+        new_states = models.storage.count(State)
+        self.assertTrue(all_states < new_states)

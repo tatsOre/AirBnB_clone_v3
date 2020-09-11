@@ -15,7 +15,7 @@ from models.review import Review
 from models.state import State
 from models.user import User
 import json
-import os
+from os import getenv
 import pep8
 import unittest
 FileStorage = file_storage.FileStorage
@@ -70,7 +70,8 @@ test_file_storage.py'])
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') == 'db',
+                     "not testing file storage")
     def test_all_returns_dict(self):
         """Test that all returns the FileStorage.__objects attr"""
         storage = FileStorage()
@@ -78,7 +79,8 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(type(new_dict), dict)
         self.assertIs(new_dict, storage._FileStorage__objects)
 
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') == 'db',
+                     "not testing file storage")
     def test_new(self):
         """test that new adds an object to the FileStorage.__objects attr"""
         storage = FileStorage()
@@ -94,7 +96,8 @@ class TestFileStorage(unittest.TestCase):
                 self.assertEqual(test_dict, storage._FileStorage__objects)
         FileStorage._FileStorage__objects = save
 
-    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') == 'db',
+                     "not testing file storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
         storage = FileStorage()
@@ -114,18 +117,23 @@ class TestFileStorage(unittest.TestCase):
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
 
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') == 'db',
+                     "not testing file storage")
     def test_get(self):
         """Tests to check get method"""
         storage = FileStorage()
-        if storage.all("State").values():
-            first_state_id = list(storage.all("State").values())[0].id
-            first_state = storage.get("State", first_state_id)
+        if storage.all(State).values():
+            first_state_id = list(storage.all(State).values())[0].id
+            first_state = storage.get(State, first_state_id)
             self.assertTrue(isinstance(first_state, State))
 
+    @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') == 'db',
+                     "not testing file storage")
     def test_count(self):
         """Tests to check count method"""
         storage = FileStorage()
+        self.assertEqual(storage.count(), len(storage.all()))
         all_objects = storage.count()
-        all_states = storage.count("State")
+        all_states = storage.count(State)
         self.assertTrue(isinstance(all_objects, int))
         self.assertTrue(isinstance(all_states, int))
