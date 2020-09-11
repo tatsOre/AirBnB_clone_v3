@@ -69,15 +69,18 @@ def create_place(city_id=None):
 def searched_places():
     """Search for a Place: POST /api/v1/places_search"""
     search_parms = request.get_json()
-    if not search_parms:
+    hbnb_places = storage.all(Place).values()  # All hbnb places
+    if search_parms is None:
         abort(400, {'Not a JSON'})
+    if len(search_parms) == 0:
+        return jsonify([place.to_dict() for place in hbnb_places])
+
     states = search_parms.get('states')
     cities = search_parms.get('cities')
     amenities = search_parms.get('amenities')
     #  if Json 'search_parms' is empty or all lists are empty:
     if not states and not cities and not amenities:
-        all_places = storage.all(Place).values()
-        return jsonify([place.to_dict() for place in all_places])
+        return jsonify([place.to_dict() for place in hbnb_places])
 
     state_cities = []  # Store all cities by every state
     all_state_places = []  # Store all places of all JSON states
@@ -100,11 +103,15 @@ def searched_places():
     #  ----- Place objects having all Amenity ids listed ----- :
     searched_places = []
     if amenities:
-        for place in all_state_places + all_city_places:
+        if cities or states:
+            places_to_search = all_state_places + all_city_places
+        elif not cities and not states:
+            places_to_search = hbnb_places
+        for place in places_to_search:
             amen_list = [item.id for item in place.amenities]
             if all(i in amen_list for i in amenities):
                 searched_places.append(place)
-        return jsonify([place.to_dict() for place in searched_places]), 201
+        return jsonify([place.to_dict() for place in searched_places])
     else:
         all_places = all_state_places + all_city_places
         return jsonify([place.to_dict() for place in all_places])

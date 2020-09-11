@@ -70,7 +70,7 @@ class BaseModel:
             del new_dict["_sa_instance_state"]
         if models.storage_t == "db" and new_dict.get('password'):
             del new_dict['password']
-        if self.__class__.__name__ == 'Place' and self.amenities:
+        if self.__class__.__name__ == 'Place':
             try:
                 del new_dict['amenities']
             except KeyError as error:

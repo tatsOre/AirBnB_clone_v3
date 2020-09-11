@@ -144,4 +144,4 @@ class TestFileStorage(unittest.TestCase):
         self.assertTrue(isinstance(all_states, int))
         new_city = City(name='Cali')
         new_city.save()
-        self.assertTrue(all_objects < len(storage.count()))
+        self.assertTrue(all_objects < storage.count())
