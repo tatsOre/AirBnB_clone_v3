@@ -127,6 +127,11 @@ class TestFileStorage(unittest.TestCase):
             first_state = storage.get(State, first_state_id)
             self.assertTrue(isinstance(first_state, State))
 
+        new_state = State(name="Cundinamarca")
+        new_state.save()
+        self.assertIs(storage.get(State, new_state.id), new_state)
+        self.assertIs(storage.get(State, 'NoExist'), None)
+
     @unittest.skipIf(getenv('HBNB_TYPE_STORAGE') == 'db',
                      "not testing file storage")
     def test_count(self):
@@ -137,3 +142,6 @@ class TestFileStorage(unittest.TestCase):
         all_states = storage.count(State)
         self.assertTrue(isinstance(all_objects, int))
         self.assertTrue(isinstance(all_states, int))
+        new_city = City(name='Cali')
+        new_city.save()
+        self.assertTrue(all_objects < len(storage.count()))
