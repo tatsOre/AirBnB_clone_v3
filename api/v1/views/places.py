@@ -66,10 +66,21 @@ def create_place(city_id=None):
 
 @app_views.route('/places_search', methods=['POST'],
                  strict_slashes=False)
-def searched_places():
-    """Search for a Place: POST /api/v1/places_search"""
+def search_places():
+    """Search for a Place, rules:
+    - If the HTTP request body is not valid JSON, will raise a 400 error.
+    - If the JSON body is empty or each list of all keys are empty:
+            will retrieve all hbnb 'Place' objects
+    - If states list or cities list are not empty, will search for 'Place'
+            objects inside each 'State' or 'City' ids listed. As states and
+            cities are inclusive, the result will be all the places linked
+            to each 'City' of a 'State' ID in the list.
+    - If amenities list is not empty, will retrieve only the 'State' or 'City'
+            places having all 'Amenity' ids listed. If states and cities list
+            are empty, will search all hbnb 'Place' objects for a place
+            having all 'Amenity' IDs listed"""
     search_parms = request.get_json()
-    hbnb_places = storage.all(Place).values()  # All hbnb places
+    hbnb_places = storage.all(Place).values()  # All hbnb Place objects
     if search_parms is None:
         abort(400, {'Not a JSON'})
     if len(search_parms) == 0:
@@ -78,12 +89,11 @@ def searched_places():
     states = search_parms.get('states')
     cities = search_parms.get('cities')
     amenities = search_parms.get('amenities')
-    #  if Json 'search_parms' is empty or all lists are empty:
     if not states and not cities and not amenities:
         return jsonify([place.to_dict() for place in hbnb_places])
 
-    state_cities = []  # Store all cities by every state
-    all_state_places = []  # Store all places of all JSON states
+    state_cities = []  #  Stores cities for each state ID
+    all_state_places = []  #  Stores all places in a state ID
     if states:
         for id in states:
             state = storage.get(State, id)
@@ -93,14 +103,13 @@ def searched_places():
             for place in city.places:
                 all_state_places.append(place)
 
-    all_city_places = []  # Store all places of all search cities
+    all_city_places = []  #  Stores all places in all cities
     if cities:
         for id in cities:
             city = storage.get(City, id)
             if city:
                 all_city_places.extend([place for place in city.places])
-    #  ----- If amenities list is not empty, search for -----
-    #  ----- Place objects having all Amenity ids listed ----- :
+
     searched_places = []
     if amenities:
         if cities or states:
